@@ -2,9 +2,11 @@ from flask import request, jsonify
 import uuid
 import re
 import speech_recognition as sr
+import os
 
 recognizer = sr.Recognizer()
 
+LEOXIA_BASE_AUDIO_PATCH = "/tmp/leoxia/audio/"
 TURN_ON = 1
 TURN_OFF = 2
 
@@ -21,7 +23,8 @@ def command_by_audio(username):
     if mime_type != 'audio/wave':
         return jsonify({'message': 'O arquivo enviado é invalido'}), 400
 
-    path = '/tmp/leoxia/audio/{name}'.format(name=uuid.uuid1())
+    create_folder()
+    path = LEOXIA_BASE_AUDIO_PATCH + '{name}'.format(name=uuid.uuid1())
     file.save(path)
 
     file_audio = sr.AudioFile(path)
@@ -30,20 +33,28 @@ def command_by_audio(username):
         audio_text = recognizer.record(source)
 
     text = recognizer.recognize_google(audio_text, language='pt-BR')
-    process_text(text)
 
-    return jsonify('Sucesso'), 200
+    return process_text(text)
 
 
 def command_by_text(username):
     text = request.json['text']
-    process_text(text)
-    return jsonify('Sucesso'), 200
+    return process_text(text)
+
 
 
 def process_text(text):
     matches = re.finditer(regex, text, re.MULTILINE | re.IGNORECASE)
     for match in matches:
-        print("Comando: {}".format(match.group(1)))
-        print("Componente: {}".format(match.group(2)))
-        print(prefix[match.group(1).upper()])
+        command = match.group(1).upper()
+        component = match.group(2).upper()
+        action = prefix[match.group(1).upper()]
+        return jsonify(
+            {'Comando': '{}'.format(command), 'Componente': '{}'.format(component), 'Ação': '{}'.format(action)}), 200
+
+
+def create_folder():
+    try:
+        os.makedirs(LEOXIA_BASE_AUDIO_PATCH)
+    except OSError as e:
+        print(e)
