@@ -4,7 +4,6 @@ from app import db
 
 
 class Component(db.Model):
-
     __tablename__ = 'component'
     id = db.Column(
         db.Integer,
@@ -13,7 +12,7 @@ class Component(db.Model):
     name = db.Column(
         db.String(64),
         index=False,
-        unique=False,
+        unique=True,
         nullable=False
     )
 
@@ -24,18 +23,18 @@ class Component(db.Model):
         nullable=True
     )
 
-    ligado = db.Column(
+    on = db.Column(
         db.Boolean,
         index=False,
         unique=False,
         nullable=False
     )
 
-    pinos = relationship('Pino', back_populates='component')
+    pins = relationship('Pin', back_populates='component', cascade="all, delete-orphan")
 
     def __repr__(self):
         return '<Component {}>'.format(self.name)
 
     def to_dict(self):
-        return {"id": self.id, "name": self.name}
-
+        return {"id": self.id, "name": self.name, "description": self.description, "on": self.on,
+                "pins": [pin.to_dict() for pin in self.pins]}

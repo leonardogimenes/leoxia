@@ -9,7 +9,7 @@ db = SQLAlchemy(app)
 
 from .routes import component_routes, auth_routes, users_routes, command_routes
 from .services import auth_service, users_service, command_service
-from .models import user_model, component_model, pino_model
+from .models import user_model, component_model, pin_model
 from .configs import authorization
 from .models.user_model import User
 

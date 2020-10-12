@@ -42,7 +42,6 @@ def command_by_text(username):
     return process_text(text)
 
 
-
 def process_text(text):
     matches = re.finditer(regex, text, re.MULTILINE | re.IGNORECASE)
     for match in matches:
