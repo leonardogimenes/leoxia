@@ -5,8 +5,8 @@ from app import db
 
 
 def create_component():
-    name = request.json['name']
-    description = request.json['description']
+    name = request.json['name'].upper()
+    description = request.json['description'].upper()
     on = request.json['on']
     pins = request.json['pins']
     component = Component(name=name, description=description, on=on)
