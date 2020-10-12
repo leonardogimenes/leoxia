@@ -8,7 +8,7 @@ import speech_recognition as sr
 import os
 
 
-GPIO.setmode(GPIO.BCM)
+GPIO.setmode(GPIO.BOARD)
 GPIO.setwarnings(False)
 
 recognizer = sr.Recognizer()
@@ -88,8 +88,8 @@ def command():
 
 def process_action(component, action):
     for pin in component.pins:
-        GPIO.setup(pin.name, GPIO.OUT)
-        GPIO.output(pin.name, gpio_command_map[action])
+        GPIO.setup(int(pin.name), GPIO.OUT)
+        GPIO.output(int(pin.name), gpio_command_map[action])
         print(pin.to_dict())
     component.on = action
 

@@ -12,7 +12,7 @@ def token_required(f):
         else:
             try:
                 decode = jwt.decode(token, 'LEOXIA@346615')
-                return f(decode.get('username'), *args, **kwargs)
+                return f(*args, **kwargs)
             except Exception as e:
                 print(e)
                 return jsonify({'message': 'Token expirado'}), 401
